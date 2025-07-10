@@ -13,14 +13,17 @@ const skills = [
   // Backend
   { name: "Node.js", level: 90, category: "backend" },
   { name: "Express", level: 80, category: "backend" },
-  { name: "MongoDB", level: 85, category: "backend" },
   { name: "Java", level: 80, category: "backend" },
   { name: "SpringBoot", level: 75, category: "backend" },
+  { name: "MongoDB", level: 85, category: "backend" },
+  { name: "MySql", level: 85, category: "backend" },
 
   // Tools
   { name: "Git/GitHub", level: 90, category: "tools" },
   { name: "Docker", level: 90, category: "tools" },
-  { name: "Jenkins", level: 75, category: "tools" },
+  { name: "Jenkins", level: 60, category: "tools" },
+  { name: "IntelliJ IDE", level: 75, category: "tools" },
+  { name: "Kubernetes", level: 60, category: "tools" },
   { name: "VS Code", level: 95, category: "tools" },
 ];
 
