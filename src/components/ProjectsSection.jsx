@@ -22,13 +22,13 @@ const projects = [
   },
   {
     id: 3,
-    title: "E-commerce Platform",
+    title: "Vision-Watch",
     description:
-      "Full-featured e-commerce platform with user authentication and payment processing.",
+      "Vision Watch is a real-time drowsiness detector that uses computer vision to track eye movements and alert users based on prolonged eye closure.",
     image: "/projects/project3.png",
-    tags: ["React.js", "Express.js", "MongoDB"],
+    tags: ["Python", "OpenCV", "Dlib", "Scipy"],
     demoUrl: "#",
-    githubUrl: "#",
+    githubUrl: "https://github.com/Kalpeshbonde/Vision-Watch",
   },
 ];
 
