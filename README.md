@@ -68,7 +68,7 @@ In this tutorial, you'll learn how to build a modern portfolio website using **R
 
 ```bash
 git clone git remote add origin https://github.com/Kalpeshbonde/Portfolio.git
-cd react-tailwind-portfolio
+cd Portfolio
 npm install
 npm run dev
 ```
