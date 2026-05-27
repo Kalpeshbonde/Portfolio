@@ -1,5 +1,5 @@
 import { Briefcase, Code, User } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 const useScrollReveal = (options = {}) => {
   const ref = useRef(null);
@@ -21,10 +21,63 @@ const useScrollReveal = (options = {}) => {
   return ref;
 };
 
+const TiltCard = ({ children, delay = 0 }) => {
+  const cardRef = useRef(null);
+
+  const handleMouseMove = useCallback((e) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -8;
+    const rotateY = ((x - centerX) / centerX) * 8;
+    card.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    const card = cardRef.current;
+    if (!card) return;
+    card.style.transform = "perspective(600px) rotateX(0deg) rotateY(0deg) scale(1)";
+  }, []);
+
+  return (
+    <div
+      ref={cardRef}
+      className="gradient-border p-6 transition-all duration-300 will-change-transform group/card"
+      style={{ transitionDelay: `${delay}s` }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      {children}
+    </div>
+  );
+};
+
 export const AboutSection = () => {
   const headingRef = useScrollReveal();
   const textRef = useScrollReveal();
   const cardsRef = useScrollReveal();
+
+  const cards = [
+    {
+      icon: <Code className="h-6 w-6 text-primary transition-transform duration-300 group-hover/card:animate-[icon-bounce_0.5s_ease]" />,
+      title: "Web Development",
+      desc: "Creating responsive websites and web applications with modern frameworks.",
+    },
+    {
+      icon: <User className="h-6 w-6 text-primary transition-transform duration-300 group-hover/card:animate-[icon-bounce_0.5s_ease]" />,
+      title: "DevOps",
+      desc: "Supporting CI/CD pipelines, infrastructure automation, and cross-team collaboration.",
+    },
+    {
+      icon: <Briefcase className="h-6 w-6 text-primary transition-transform duration-300 group-hover/card:animate-[icon-bounce_0.5s_ease]" />,
+      title: "Project Management",
+      desc: "Collaborating with cross-functional teams using agile methodologies.",
+    },
+  ];
 
   return (
     <section id="about" className="py-24 px-4 relative">
@@ -33,7 +86,7 @@ export const AboutSection = () => {
           ref={headingRef}
           className="text-3xl md:text-4xl font-bold mb-12 text-center reveal-up"
         >
-          About <span className="text-primary"> Me</span>
+          About <span className="text-primary">Me</span>
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -51,7 +104,7 @@ export const AboutSection = () => {
               <a href="#contact" className="cosmic-button">Get In Touch</a>
               <a
                 href=""
-                className="px-6 py-2 rounded-full border border-primary text-primary hover:bg-primary/10 transition-colors duration-300"
+                className="px-6 py-2 rounded-full border border-primary text-primary hover:bg-primary/10 transition-all duration-300 hover:shadow-[0_0_15px_rgba(56, 189, 248, 0.3)]"
               >
                 Download CV
               </a>
@@ -59,28 +112,8 @@ export const AboutSection = () => {
           </div>
 
           <div ref={cardsRef} className="grid grid-cols-1 gap-6 reveal-right">
-            {[
-              {
-                icon: <Code className="h-6 w-6 text-primary" />,
-                title: "Web Development",
-                desc: "Creating responsive websites and web applications with modern frameworks.",
-              },
-              {
-                icon: <User className="h-6 w-6 text-primary" />,
-                title: "DevOps",
-                desc: "Supporting CI/CD pipelines, infrastructure automation, and cross-team collaboration.",
-              },
-              {
-                icon: <Briefcase className="h-6 w-6 text-primary" />,
-                title: "Project Management",
-                desc: "Collaborating with cross-functional teams using agile methodologies.",
-              },
-            ].map(({ icon, title, desc }, i) => (
-              <div
-                key={i}
-                className="gradient-border p-6 card-hover"
-                style={{ transitionDelay: `${i * 0.1}s` }}
-              >
+            {cards.map(({ icon, title, desc }, i) => (
+              <TiltCard key={i} delay={i * 0.1}>
                 <div className="flex items-start gap-4">
                   <div className="p-3 rounded-full bg-primary/10">{icon}</div>
                   <div className="text-left">
@@ -88,20 +121,11 @@ export const AboutSection = () => {
                     <p className="text-muted-foreground">{desc}</p>
                   </div>
                 </div>
-              </div>
+              </TiltCard>
             ))}
           </div>
         </div>
       </div>
-
-      <style>{`
-        .reveal-up { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
-        .reveal-left { opacity: 0; transform: translateX(-50px); transition: opacity 0.7s ease, transform 0.7s ease; }
-        .reveal-right { opacity: 0; transform: translateX(50px); transition: opacity 0.7s ease, transform 0.7s ease; }
-        .revealed.reveal-up, .revealed.reveal-left, .revealed.reveal-right {
-          opacity: 1; transform: translate(0, 0);
-        }
-      `}</style>
     </section>
   );
 };

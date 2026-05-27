@@ -24,6 +24,35 @@ const skills = [
 
 const categories = ["all", "frontend", "backend", "tools"];
 
+const AnimatedCounter = ({ target, visible, delay = 0 }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!visible) return;
+    const timeout = setTimeout(() => {
+      const duration = 1000;
+      const steps = 30;
+      const increment = target / steps;
+      let current = 0;
+      const interval = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          setCount(target);
+          clearInterval(interval);
+        } else {
+          setCount(Math.floor(current));
+        }
+      }, duration / steps);
+
+      return () => clearInterval(interval);
+    }, delay * 1000);
+
+    return () => clearTimeout(timeout);
+  }, [visible, target, delay]);
+
+  return <span>{count}%</span>;
+};
+
 export const SkillsSection = () => {
   const [activeCategory, setActiveCategory] = useState("all");
   const sectionRef = useRef(null);
@@ -49,7 +78,7 @@ export const SkillsSection = () => {
           className="text-3xl md:text-4xl font-bold mb-12 text-center transition-all duration-700"
           style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(30px)" }}
         >
-          My <span className="text-primary"> Skills</span>
+          My <span className="text-primary">Skills</span>
         </h2>
 
         <div
@@ -61,10 +90,10 @@ export const SkillsSection = () => {
               key={key}
               onClick={() => setActiveCategory(category)}
               className={cn(
-                "px-5 py-2 rounded-full transition-colors duration-300 capitalize",
+                "px-5 py-2 rounded-full transition-all duration-300 capitalize",
                 activeCategory === category
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary/70 text-foreground hover:bg-secondary"
+                  ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(56, 189, 248, 0.4)]"
+                  : "bg-secondary/70 text-foreground hover:bg-secondary hover:shadow-[0_0_10px_rgba(56, 189, 248, 0.2)]"
               )}
             >
               {category}
@@ -76,7 +105,7 @@ export const SkillsSection = () => {
           {filteredSkills.map((skill, key) => (
             <div
               key={skill.name}
-              className="bg-card p-6 rounded-lg shadow-xs card-hover transition-all duration-500"
+              className="bg-card p-6 rounded-lg shadow-xs card-hover shimmer-effect transition-all duration-500"
               style={{
                 opacity: visible ? 1 : 0,
                 transform: visible ? "translateY(0)" : "translateY(40px)",
@@ -86,17 +115,28 @@ export const SkillsSection = () => {
               <div className="text-left mb-4">
                 <h3 className="font-semibold text-lg">{skill.name}</h3>
               </div>
-              <div className="w-full bg-secondary/50 h-2 rounded-full overflow-hidden">
+              <div className="w-full bg-secondary/50 h-2 rounded-full overflow-hidden relative">
                 <div
-                  className="bg-primary h-2 rounded-full transition-all duration-1000"
+                  className="bg-primary h-2 rounded-full transition-all duration-1000 relative"
                   style={{
                     width: visible ? skill.level + "%" : "0%",
                     transitionDelay: `${0.3 + key * 0.05}s`,
                   }}
-                />
+                >
+                  {/* Glowing dot at the tip */}
+                  {visible && (
+                    <div className="progress-glow-dot" />
+                  )}
+                </div>
               </div>
               <div className="text-right mt-1">
-                <span className="text-sm text-muted-foreground">{skill.level}%</span>
+                <span className="text-sm text-muted-foreground font-medium">
+                  <AnimatedCounter
+                    target={skill.level}
+                    visible={visible}
+                    delay={0.3 + key * 0.05}
+                  />
+                </span>
               </div>
             </div>
           ))}

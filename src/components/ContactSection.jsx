@@ -1,7 +1,14 @@
-import { Instagram, Linkedin, Mail, MapPin, Phone, Send, Twitch, Twitter } from "lucide-react";
+import { Instagram, Linkedin, Mail, MapPin, Phone, Send, Twitter } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect, useRef } from "react";
+
+const socialLinks = [
+  { icon: <Linkedin />, href: "https://www.linkedin.com/in/kalpesh-bonde-404488265/", color: "#0A66C2", label: "LinkedIn" },
+  { icon: <Twitter />, href: "#", color: "#1DA1F2", label: "Twitter" },
+  { icon: <Instagram />, href: "#", color: "#E4405F", label: "Instagram" },
+  { icon: <Mail />, href: "mailto:kalpeshbonde04@gmail.com", color: "#EA4335", label: "Gmail" },
+];
 
 export const ContactSection = () => {
   const { toast } = useToast();
@@ -24,6 +31,7 @@ export const ContactSection = () => {
     setTimeout(() => {
       toast({ title: "Message sent!", description: "Thank you! I'll get back to you soon." });
       setIsSubmitting(false);
+      e.target.reset();
     }, 1500);
   };
 
@@ -34,7 +42,7 @@ export const ContactSection = () => {
           className="text-3xl md:text-4xl font-bold mb-4 text-center transition-all duration-700"
           style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(30px)" }}
         >
-          Get In <span className="text-primary"> Touch</span>
+          Get In <span className="text-primary">Touch</span>
         </h2>
 
         <p
@@ -56,8 +64,10 @@ export const ContactSection = () => {
                 { icon: <Phone className="h-6 w-6 text-primary" />, label: "Phone", value: "+91", href: "#" },
                 { icon: <MapPin className="h-6 w-6 text-primary" />, label: "Location", value: "Pune, Maharashtra", href: "#" },
               ].map(({ icon, label, value, href }) => (
-                <div key={label} className="flex items-start space-x-4">
-                  <div className="p-3 rounded-full bg-primary/10">{icon}</div>
+                <div key={label} className="flex items-start space-x-4 group">
+                  <div className="p-3 rounded-full bg-primary/10 transition-all duration-300 group-hover:bg-primary/20 group-hover:shadow-[0_0_15px_rgba(56, 189, 248, 0.3)]">
+                    {icon}
+                  </div>
                   <div>
                     <h4 className="font-medium">{label}</h4>
                     <a href={href} className="text-muted-foreground hover:text-primary transition-colors">{value}</a>
@@ -68,13 +78,27 @@ export const ContactSection = () => {
             <div className="pt-8">
               <h4 className="font-medium mb-4">Connect With Me</h4>
               <div className="flex space-x-4 justify-center">
-                {[
-                  { icon: <Linkedin />, href: "https://www.linkedin.com/in/kalpesh-bonde-404488265/" },
-                  { icon: <Twitter />, href: "#" },
-                  { icon: <Instagram />, href: "#" },
-                  { icon: <Twitch />, href: "#" },
-                ].map(({ icon, href }, i) => (
-                  <a key={i} href={href} target="_blank" className="text-foreground/80 hover:text-primary transition-colors duration-300">
+                {socialLinks.map(({ icon, href, color, label }, i) => (
+                  <a
+                    key={i}
+                    href={href}
+                    target="_blank"
+                    aria-label={label}
+                    className="social-icon-hover text-foreground/80 p-2 rounded-full transition-all duration-300"
+                    style={{
+                      "--brand-color": color,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = color;
+                      e.currentTarget.style.boxShadow = `0 0 15px ${color}40`;
+                      e.currentTarget.style.backgroundColor = `${color}15`;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = "";
+                      e.currentTarget.style.boxShadow = "";
+                      e.currentTarget.style.backgroundColor = "";
+                    }}
+                  >
                     {icon}
                   </a>
                 ))}
@@ -92,28 +116,40 @@ export const ContactSection = () => {
                 { id: "name", label: "Your Name", type: "text", placeholder: "Kalpesh Bonde..." },
                 { id: "email", label: "Your Email", type: "email", placeholder: "kalpesh@gmail.com" },
               ].map(({ id, label, type, placeholder }) => (
-                <div key={id}>
+                <div key={id} className="relative">
                   <label htmlFor={id} className="block text-sm font-medium mb-2">{label}</label>
                   <input
                     type={type} id={id} name={id} required placeholder={placeholder}
-                    className="w-full px-4 py-3 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="input-glow w-full px-4 py-3 rounded-md border border-input bg-background focus:outline-none transition-all duration-300"
                   />
                 </div>
               ))}
-              <div>
+              <div className="relative">
                 <label htmlFor="message" className="block text-sm font-medium mb-2">Your Message</label>
                 <textarea
                   id="message" name="message" required rows={4}
-                  className="w-full px-4 py-3 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                  className="input-glow w-full px-4 py-3 rounded-md border border-input bg-background focus:outline-none resize-none transition-all duration-300"
                   placeholder="Hello, I'd like to talk about..."
                 />
               </div>
               <button
                 type="submit" disabled={isSubmitting}
-                className={cn("cosmic-button w-full flex items-center justify-center gap-2")}
+                className={cn(
+                  "cosmic-button w-full flex items-center justify-center gap-2",
+                  isSubmitting && "opacity-80 cursor-not-allowed"
+                )}
               >
-                {isSubmitting ? "Sending..." : "Send Message"}
-                <Send size={16} />
+                {isSubmitting ? (
+                  <>
+                    Sending
+                    <span className="send-spinner" />
+                  </>
+                ) : (
+                  <>
+                    Send Message
+                    <Send size={16} />
+                  </>
+                )}
               </button>
             </form>
           </div>

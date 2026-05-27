@@ -61,7 +61,7 @@ export const ProjectsSection = () => {
           className="text-3xl md:text-4xl font-bold mb-4 text-center transition-all duration-700"
           style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(30px)" }}
         >
-          Featured <span className="text-primary"> Projects</span>
+          Featured <span className="text-primary">Projects</span>
         </h2>
 
         <p
@@ -76,20 +76,41 @@ export const ProjectsSection = () => {
           {projects.map((project, key) => (
             <div
               key={project.id}
-              className="group bg-card rounded-xl overflow-hidden border border-border card-hover transition-all duration-700 flex flex-col"
+              className="group bg-card rounded-xl overflow-hidden border border-border transition-all duration-700 flex flex-col hover:shadow-[0_0_25px_rgba(56, 189, 248, 0.15)] hover:border-primary/30"
               style={{
                 opacity: visible ? 1 : 0,
                 transform: visible ? "translateY(0) scale(1)" : "translateY(50px) scale(0.95)",
                 transitionDelay: `${0.15 + key * 0.1}s`,
               }}
             >
-              {/* Image */}
-              <div className="h-40 overflow-hidden">
+              {/* Image with glassmorphic overlay */}
+              <div className="h-40 overflow-hidden relative">
                 <img
                   src={project.image}
                   alt={project.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
+                {/* Glassmorphic overlay on hover */}
+                <div className="absolute inset-0 glass-overlay opacity-0 group-hover:opacity-100 transition-all duration-400 flex items-center justify-center gap-3">
+                  {project.demoUrl !== "#" && (
+                    <a
+                      href={project.demoUrl}
+                      target="_blank"
+                      className="p-2.5 rounded-full bg-white/15 hover:bg-white/25 text-white transition-all duration-300 translate-y-4 group-hover:translate-y-0"
+                      style={{ transitionDelay: "0.05s" }}
+                    >
+                      <ExternalLink size={16} />
+                    </a>
+                  )}
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    className="p-2.5 rounded-full bg-white/15 hover:bg-white/25 text-white transition-all duration-300 translate-y-4 group-hover:translate-y-0"
+                    style={{ transitionDelay: "0.1s" }}
+                  >
+                    <Github size={16} />
+                  </a>
+                </div>
               </div>
 
               {/* Body */}
@@ -99,25 +120,25 @@ export const ProjectsSection = () => {
                   {project.description}
                 </p>
 
-                {/* Tags */}
+                {/* Tags with glow on hover */}
                 <div className="flex flex-wrap gap-1 mb-4">
                   {project.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-2 py-0.5 text-[10px] font-medium border rounded-full bg-secondary text-secondary-foreground"
+                      className="px-2 py-0.5 text-[10px] font-medium border rounded-full bg-secondary text-secondary-foreground transition-all duration-300 group-hover:border-primary/40 group-hover:shadow-[0_0_8px_rgba(56, 189, 248, 0.15)]"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
 
-                {/* Links */}
+                {/* Links that slide up on hover */}
                 <div className="flex gap-2 mt-auto">
                   {project.demoUrl !== "#" && (
                     <a
                       href={project.demoUrl}
                       target="_blank"
-                      className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                      className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-all duration-300 hover:shadow-[0_0_10px_rgba(56, 189, 248, 0.3)]"
                     >
                       <ExternalLink size={11} /> Demo
                     </a>
@@ -125,7 +146,7 @@ export const ProjectsSection = () => {
                   <a
                     href={project.githubUrl}
                     target="_blank"
-                    className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border border-border hover:border-primary hover:text-primary transition-colors"
+                    className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border border-border hover:border-primary hover:text-primary transition-all duration-300 hover:shadow-[0_0_10px_rgba(56, 189, 248, 0.2)]"
                   >
                     <Github size={11} /> GitHub
                   </a>
